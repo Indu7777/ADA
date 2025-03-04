@@ -1,0 +1,15 @@
+bool checkPowersOfThree(int n) {
+  int powerOf3 = 1;
+  while (powerOf3 * 3 <= n)
+  {
+    powerOf3 *= 3;
+  }
+  while (n && powerOf3)
+  {
+    if (powerOf3 <= n)
+      n -= powerOf3;
+    powerOf3 /= 3;
+  }
+  return !n;
+    
+}
