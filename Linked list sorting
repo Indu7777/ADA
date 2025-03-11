@@ -1,0 +1,25 @@
+struct ListNode* sortList(struct ListNode* head) {
+    if(head!=NULL){
+    struct ListNode* temp=head;
+    while(temp->next!=NULL)
+    {
+        struct ListNode* cur=temp->next;
+        while(cur!=NULL)
+        {
+            if(temp->val>cur->val)
+            {
+                int t=temp->val;
+                temp->val=cur->val;
+                cur->val=t;
+            }
+            cur=cur->next;
+
+        }
+        temp=temp->next;
+    }
+    return head;
+    }
+    else{
+    return NULL;
+    }
+}
