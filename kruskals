@@ -1,0 +1,96 @@
+#include <stdio.h>
+
+#define MAX_VERTICES 10
+#define MAX_EDGES 45
+
+int parent[MAX_VERTICES];
+int rank[MAX_VERTICES];
+
+int edges[MAX_EDGES][3];
+void initialize_set(int n) {
+    for (int i = 0; i < n; i++) {
+        parent[i] = i;
+        rank[i] = 0;
+    }
+}
+
+int find(int u) {
+    if (u != parent[u]) {
+        parent[u] = find(parent[u]);
+    }
+    return parent[u];
+}
+
+void union_sets(int u, int v) {
+    int root_u = find(u);
+    int root_v = find(v);
+
+    if (root_u != root_v) {
+        if (rank[root_u] > rank[root_v]) {
+            parent[root_v] = root_u;
+        } else if (rank[root_u] < rank[root_v]) {
+            parent[root_u] = root_v;
+        } else {
+            parent[root_v] = root_u;
+            rank[root_u]++;
+        }
+    }
+}
+
+void kruskal(int edges[MAX_EDGES][3], int m, int n) {
+    int mst_weight = 0;
+    int mst_edges = 0;
+
+    for (int i = 0; i < m - 1; i++) {
+        for (int j = 0; j < m - 1 - i; j++) {
+            if (edges[j][2] > edges[j + 1][2]) {
+                for (int k = 0; k < 3; k++) {
+                    int temp = edges[j][k];
+                    edges[j][k] = edges[j + 1][k];
+                    edges[j + 1][k] = temp;
+                }
+            }
+        }
+    }
+
+    printf("Edges in the MST:\n");
+
+    for (int i = 0; i < m; i++) {
+        int u = edges[i][0];
+        int v = edges[i][1];
+        int weight = edges[i][2];
+
+        if (find(u) != find(v)) {
+            printf("%d - %d (weight: %d)\n", u, v, weight);
+            mst_weight += weight;
+            union_sets(u, v);
+            mst_edges++;
+
+            if (mst_edges == n - 1) {
+                break;
+            }
+        }
+    }
+
+    printf("Total weight of the MST: %d\n", mst_weight);
+}
+
+int main() {
+    int n, m;
+
+    printf("Enter the number of vertices: ");
+    scanf("%d", &n);
+    printf("Enter the number of edges: ");
+    scanf("%d", &m);
+
+    printf("Enter each edge in the format (u, v, weight):\n");
+    for (int i = 0; i < m; i++) {
+        scanf("%d %d %d", &edges[i][0], &edges[i][1], &edges[i][2]);
+    }
+
+    initialize_set(n);
+
+    kruskal(edges, m, n);
+
+    return 0;
+}
